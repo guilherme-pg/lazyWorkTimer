@@ -1,57 +1,54 @@
-// GLOBAL VARIABLES
-let hr = 0;
-let min = 0;
-let sec = 0;
-let stoptime = true;
+//GLOBAL VARIABLES
+let startButton = false;
+let pauseButton = false;
+let hour = 0;
+let minute = 0;
+let seconds = 0;
+let millisecond = 0;
+
+
+// SHOW AND HIDDE MILLISECONDS
+let buttonSecondsMilliseconds = document.getElementById('button_seconds_milliseconds');
+
+// BUTTONS START/PAUSE AND RESET
+let buttonStartPause = document.getElementById('button_start_pause');
+let buttonRestart = document.getElementById('button_reset');
+
+// TIMERS
+let workTimer = document.getElementById('work_timer');
+let lazyTimer = document.getElementById('lazy_timer');
+
+buttonStartPause.onclick = workLazyTime;
+buttonReset.onclick = resetTimers;
 
 
 // FUNCTIONS
-function startTimer() {
-  if (stoptime == true) {
-        stoptime = false;
-        timerCycle();
-    };
-};
-function stopTimer() {
-  if (stoptime == false) {
-    stoptime = true;
+function workLazyTimers() {
+  if (!startButton) {
+    workTimer()
+  } else {
+    lazyTimer()
   };
 };
 
-function timerCycle() {
-    if (stoptime == false) {
-    sec = parseInt(sec);
-    min = parseInt(min);
-    hr = parseInt(hr);
 
-    sec = sec + 1;
+function workTimer() {
+  startButton = true;
+  pauseButton = false;
 
-    if (sec == 60) {
-      min = min + 1;
-      sec = 0;
-    };
-    if (min == 60) {
-      hr = hr + 1;
-      min = 0;
-      sec = 0;
-    };
-
-    if (sec < 10 || sec == 0) {
-      sec = '0' + sec;
-    }
-    if (min < 10 || min == 0) {
-      min = '0' + min;
-    }
-    if (hr < 10 || hr == 0) {
-      hr = '0' + hr;
-    };
-
-    timer.innerHTML = hr + ':' + min + ':' + sec;
-
-    setTimeout("timerCycle()", 1000);
-  };
 };
 
-function resetTimer() {
-    timer.innerHTML = '00:00:00';
+function lazyTimer() {
+  startButton = false;
+  pauseButton = true;
+
+};
+
+
+function resetTimers() {
+  startButton = false;
+  pauseButton = false;
+
+  workTimer.innerHTML = "00:00:00:00";
+  lazyTimer.innerHTML = "00:00:00:00";
 };
