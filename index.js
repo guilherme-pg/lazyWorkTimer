@@ -13,6 +13,7 @@ let elapsedTime = 0;
 let timerInterval;
 
 
+
 // SHOW AND HIDDE MILLISECONDS
 // let buttonSecondsMilliseconds = document.getElementById('button_seconds_milliseconds');
 
@@ -32,21 +33,21 @@ buttonReset.onclick = resetTimers;
 
 
 
-
 // CHANGE START/PAUSE BUTTON DISPLAY & SETTING TO WORK THE TIMER
 function workTimerSets() {
+  oneOfTheTimers = workTimer;
   startButton = true;
   pauseButton = false;
   buttonStart.hidden = true;
   buttonPause.hidden = false;
 };
 function lazyTimerSets() {
+  oneOfTheTimers = lazyTimer;
   startButton = false;
   pauseButton = true;
   buttonPause.hidden = true;
   buttonStart.hidden = false;
 };
-
 
 
 
@@ -73,18 +74,24 @@ function timeToString(time) {
 
 
 
+// SET WORK OR REST TIMER
+function setWhichTimer(theTimer) {
+  theTimer.innerHTML = timeToString(elapsedTime);
+};
+
 
 // START THE TIMER
 function start() {
   startTime = Date.now() - elapsedTime;
   timerInterval = setInterval(function printTime() {
     elapsedTime = Date.now() - startTime;
-    workTimer.innerHTML = timeToString(elapsedTime);
+    setWhichTimer(oneOfTheTimers);
   }, 10);
 };
 
 
 
+// RESET TIMERS
 function resetTimers() {
 
   clearInterval(timerInterval);
@@ -102,13 +109,15 @@ function resetTimers() {
 
 
 
-
+// START EVERYTHING
 function workLazyTimers() {
   if (!startButton) {
     workTimerSets();
     start();
+
   } else {
     lazyTimerSets();
+    start();
     clearInterval(timerInterval);
   };
 };
