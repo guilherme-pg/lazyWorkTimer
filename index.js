@@ -8,9 +8,11 @@ let lazyHour = 0;
 let lazyMinute = 0;
 let lazySeconds = 0;
 // let millisecond = 0;
-let startTime;
+let startTime = 0;
 let elapsedTime = 0;
+let elapsedRestTime = 0;
 let timerInterval;
+let restTimerInterval;
 
 
 
@@ -24,7 +26,7 @@ let buttonReset = document.getElementById('button_reset');
 
 // TIMERS
 let workTimer = document.getElementById('work_timer');
-let lazyTimer = document.getElementById('lazy_timer');
+let restTimer = document.getElementById('lazy_timer');
 
 // ONCLICK EVENTS
 buttonStart.onclick = workLazyTimers;
@@ -41,8 +43,8 @@ function workTimerSets() {
   buttonStart.hidden = true;
   buttonPause.hidden = false;
 };
-function lazyTimerSets() {
-  oneOfTheTimers = lazyTimer;
+function restTimerSets() {
+  oneOfTheTimers = restTimer;
   startButton = false;
   pauseButton = true;
   buttonPause.hidden = true;
@@ -52,7 +54,26 @@ function lazyTimerSets() {
 
 
 // SET TIME IN DOM
-function timeToString(time) {
+function workTimeToString(time) {
+  let differenceInHrs = time / 3600000;
+  let workHour = Math.floor(differenceInHrs);
+
+  let differenceInMin = (differenceInHrs - workHour) * 60;
+  let workMinute = Math.floor(differenceInMin);
+
+  let differenceInSec = (differenceInMin - workMinute) * 60;
+  let workSeconds = Math.floor(differenceInSec);
+
+  let differenceInMs = (differenceInSec - workSeconds) * 100;
+  let workMilliseconds  = Math.floor(differenceInMs);
+
+  let formattedMM = workMinute.toString().padStart(2, "0");
+  let formattedSS = workSeconds.toString().padStart(2, "0");
+  let formattedMS = workMilliseconds.toString().padStart(2, "0");
+
+  return `${formattedMM}:${formattedSS}:${formattedMS}`;
+};
+function restTimeToString(time) {
   let differenceInHrs = time / 3600000;
   let workHour = Math.floor(differenceInHrs);
 
@@ -75,17 +96,24 @@ function timeToString(time) {
 
 
 // SET WORK OR REST TIMER
-function setWhichTimer(theTimer) {
-  theTimer.innerHTML = timeToString(elapsedTime);
-};
+// function setWhichTimer(theTimer) {
+//   theTimer.innerHTML = timeToString(elapsedTime);
+// };
 
 
 // START THE TIMER
-function start() {
+function startWorkTimer() {
   startTime = Date.now() - elapsedTime;
   timerInterval = setInterval(function printTime() {
     elapsedTime = Date.now() - startTime;
-    setWhichTimer(oneOfTheTimers);
+    workTimer.innerHTML = workTimeToString(elapsedTime);
+  }, 10);
+};
+function startRestTimer() {
+  startTime = Date.now() - elapsedRestTime;
+  restTimerInterval = setInterval(function printTime() {
+    elapsedRestTime = Date.now() - startTime;
+    restTimer.innerHTML = restTimeToString(elapsedRestTime);
   }, 10);
 };
 
@@ -95,8 +123,10 @@ function start() {
 function resetTimers() {
 
   clearInterval(timerInterval);
+  clearInterval(restTimerInterval);
   elapsedTime = 0;
-
+  elapsedRestTime = 0;
+  
   startButton = false;
   pauseButton = false;
 
@@ -104,7 +134,7 @@ function resetTimers() {
   buttonPause.hidden = true;
 
   workTimer.innerHTML = "00:00:00";
-  lazyTimer.innerHTML = "00:00:00";
+  restTimer.innerHTML = "00:00:00";
 };
 
 
@@ -113,11 +143,13 @@ function resetTimers() {
 function workLazyTimers() {
   if (!startButton) {
     workTimerSets();
-    start();
+    startWorkTimer();
+    clearInterval(restTimerInterval);
 
   } else {
-    lazyTimerSets();
-    start();
+    restTimerSets();
+    startRestTimer();
     clearInterval(timerInterval);
+    
   };
 };
